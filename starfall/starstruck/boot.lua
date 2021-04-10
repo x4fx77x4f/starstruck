@@ -301,14 +301,7 @@ function errhand(msg)
 	if type(msg) == "table" then
 		msg = msg.message
 	end
-	local lookup = lookuperror(string.match(msg, "^SF:.+:%-?%d+: (.+)$"))
-	msg = lookup or msg
-	if errored or not guestenv.love or not guestenv.love.errhand then
-		error(msg, 2)
-	else
-		guestenv.love.errhand(msg)
-	end
-	errored = true
+	guestenv.love.errhand(msg)
 end
 
 function guestenv.love.errhand(msg)

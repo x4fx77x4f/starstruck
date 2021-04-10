@@ -1,5 +1,11 @@
 local string = safestring
 
+-- TODO: find a way to deal with starfall's custom error types.
+guestenv.assert = assert
+guestenv.error = error
+guestenv.pcall = pcall
+guestenv.xpcall = xpcall
+
 guestenv.print = print
 guestenv.type = type
 guestenv.select = select
@@ -92,66 +98,6 @@ function guestenv.require(path)
 		end
 	end
 	error(err:gsub("\n$", ""), 2)
-end
-
-local errorsalt = ""
-for i=1, 10 do
-	errorsalt = errorsalt..string.char(math.random(32, 126))
-end
-local errorpattern = string.patternSafe(errorsalt).."%d+$"
-local errorlookup = {}
-local errorindex = 0
-function lookuperror(errorid)
-	return errorlookup[errorid or false]
-end
-function guestenv.assert(condition, message)
-	if condition then
-		return condition
-	end
-	local errorid = errorsalt..errorindex
-	errorlookup[errorid] = message
-	errorindex = errorindex+1
-	error(errorid, 2)
-end
-function guestenv.error(message, level)
-	local errorid = errorsalt..errorindex
-	errorlookup[errorid] = message
-	errorindex = errorindex+1
-	level = level or 1
-	error(errorid, level+1)
-end
-function guestenv.pcall(func, ...)
-	local returned = {pcall(func, ...)}
-	if returned[1] then
-		return unpack(returned)
-	end
-	if type(returned[2]) == "table" then
-		local errorid = returned[2].message:match(errorpattern)
-		if errorid then
-			return false, errorlookup[errorid]
-		end
-		return false, returned[2].message
-	end
-	return false, returned[2]
-end
-function guestenv.xpcall(func, callback, ...)
-	local returned = {pcall(func, ...)}
-	if returned[1] then
-		return unpack(returned)
-	end
-	if type(returned[2]) == "table" then
-		local curerror
-		local errorid = returned[2].message:match(errorpattern)
-		if errorid then
-			curerror = errorlookup[errorid]
-		else
-			curerror = returned[2].message
-		end
-		callback(curerror)
-		return false, curerror
-	end
-	callback(returned[2])
-	return false, returned[2]
 end
 
 -- ugly hack!!
