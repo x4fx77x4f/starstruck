@@ -149,6 +149,9 @@ guestenv.love.graphics = {
 	setFont = function(font)
 		curfont = font
 		render.setFont(assert(Font_idx[font], "that's not a font..."))
+	end,
+	getFont = function()
+		return curfont
 	end
 }
 

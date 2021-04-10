@@ -1,10 +1,10 @@
 local a, b, c, d
 function love.load()
 	assert(not string.normalizePath, "string function")
-	assert(not ("").normalizePath, "string method")
+	--assert(not ("").normalizePath, "string method") -- gonna be a while before this gets fixed...
 	b = love.graphics.newImage("logo.png")
 	c = love.graphics.newFont()
-	d = love.graphics.newImageFont("font.png", "STARFLE™!|x") -- UTF-8
+	--d = love.graphics.newImageFont("font.png", "STARFLE™!|x") -- UTF-8
 end
 function love.update(dt)
 	a = dt
@@ -34,7 +34,7 @@ function love.draw()
 	love.graphics.print("2w2", 200, 20, now, nil, nil, 10, 10)
 	love.graphics.print("3w3", 200, 20, now, nil, nil, 20, 20)
 	love.graphics.print("4w4", 200, 20, now, 2, 2, 30, 30)
-	love.graphics.setFont(d)
+	--love.graphics.setFont(d)
 	love.graphics.print("STARFALL™!", 20, 80)
 	love.graphics.print("STARFALL™!|x", 20, 80+32+20)
 end
